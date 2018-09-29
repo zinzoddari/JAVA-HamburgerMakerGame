@@ -1,0 +1,57 @@
+﻿-- 테이블 순서는 관계를 고려하여 한 번에 실행해도 에러가 발생하지 않게 정렬되었습니다.
+
+-- hamrecipe Table Create SQL
+CREATE TABLE hamrecipe
+(
+    recipenum    INT    NOT NULL, 
+    foodnum      INT    NULL, 
+    hamnum       INT    NULL, 
+    indexnum     INT    NULL, 
+    CONSTRAINT HAMRECIPE_PK PRIMARY KEY (recipenum)
+)
+/
+
+CREATE SEQUENCE hamrecipe_SEQ
+START WITH 1
+INCREMENT BY 1;
+/
+
+-- hamburger Table Create SQL
+CREATE TABLE hamburger
+(
+    hamnum      INT             NOT NULL, 
+    hamname     VARCHAR2(50)    NULL, 
+    hamprice    VARCHAR2(20)    DEFAULT '0', 
+    CONSTRAINT HAMBURGER_PK PRIMARY KEY (hamnum)
+)
+/
+
+CREATE SEQUENCE hamburger_SEQ
+START WITH 1
+INCREMENT BY 1;
+/
+
+ALTER TABLE hamburger
+    ADD CONSTRAINT FK_hamburger_hamnum_hamrecipe_ FOREIGN KEY (hamnum)
+        REFERENCES hamrecipe (hamnum)
+/
+
+
+-- hamfood Table Create SQL
+CREATE TABLE hamfood
+(
+    foodnum     INT             NOT NULL, 
+    foodname    VARCHAR2(20)    NULL, 
+    CONSTRAINT HAMFOOD_PK PRIMARY KEY (foodnum)
+)
+/
+
+CREATE SEQUENCE hamfood_SEQ
+START WITH 1
+INCREMENT BY 1;
+/
+
+create view hamview as
+select recipenum,f.foodnum,h.hamnum,indexnum,foodname,hamprice from
+hamburger h,hamfood f,hamrecipe r where h.hamnum=r.hamnum and r.foodnum=f.foodnum;
+
